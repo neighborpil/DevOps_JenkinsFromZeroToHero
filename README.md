@@ -88,4 +88,5 @@ $ docker-compose up -d
  - 실행뒤 로그 확인
 ```
 $ docker logs -f jenkins
+-- 로그에서 pwd를 확인해야 한다.
 ```
