@@ -90,3 +90,25 @@ $ docker-compose up -d
 $ docker logs -f jenkins
 -- 로그에서 pwd를 확인해야 한다.
 ```
+ - 프로그램 종료
+```
+$ docker-compose stop
+```
+ - 프로그램 재시작
+```
+$ docker-compose restart jenkins
+```
+ - 프로그램 삭제
+   + 관련된 모든 것을 지운다
+   + 하지만 volumes에 저장된 것은 삭제하지 않는다
+```
+$ docker-compose down
+```
+ - 도커 프로세스안으로 접속
+```
+$ docker exec -ti jenkins bash
+```
+ - 텍스트 출력
+```
+$ echo "Hello, $NAME. Current date and tiem is$(date)"
+```
