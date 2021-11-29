@@ -112,3 +112,53 @@ $ docker exec -ti jenkins bash
 ```
 $ echo "Hello, $NAME. Current date and tiem is$(date)"
 ```
+
+ - 젠킨스에서 실행할 스크립트
+```
+NAME=Feelong
+echo "Hello, $NAME. Current date and tiem is$(date)" > /tmp/info
+```
+
+### Run script file inside docker process
+1. create script file
+```
+$ vi script.sh
+```
+```
+-- inside script.sh
+#!/bin/bash
+
+NAME=$1
+LASTNAME=$2
+
+echo "Hello, $NAME $LASTNAME"
+
+```
+2. give excutable permission
+```
+$ chmod +x script.sh
+```
+
+3. copy file to docker process
+```
+$ docker cp script.sh jenkins:/tmp/script.sh
+```
+
+4. check that the copied file is exists
+```
+$ docker exec -it jenkins bash
+
+$ cat /tmp/script.sh
+```
+
+5. run script on Jenkins dashboard
+ - select job
+ - change text inside execute sheel box
+```
+/tmp/script.sh Feelong Park
+```
+```
+NAME=Feelong
+LASTNAME=PARK
+/tmp/script.sh $NAME $LASTNAME
+```
