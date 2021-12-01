@@ -178,3 +178,63 @@ else
 fi
 
 ```
+
+### ※ How to connect another linux os by ssh
+ - using remote_host as internal dns
+1. create Dockerfile
+```
+FROM centos:7
+
+RUN yum -y install openssh-server
+
+RUN useradd remote_user && \
+    echo "1234" | passwd remote_user --stdin && \
+    mkdir /home/remote_user/.ssh && \
+    chmod 700 /home/remote_user/.ssh
+
+COPY remote-key.pub /home/remote_user/.ssh/authorized_keys
+
+RUN chown remote_user:remote_user -R /home/remote_user/.ssh/ && \
+    chmod 600 /home/remote_user/.ssh/authorized_keys
+
+RUN /usr/sbin/sshd-keygen
+
+CMD /usr/sbin/sshd -D
+
+```
+2. add remote_host to docker-compose.yml
+```
+version: '3'
+services:
+  jenkins:
+    container_name: jenkins
+    image: jenkins/jenkins
+    ports:
+      - "8080:8080"
+    volumes:
+      - "$PWD/jenkins_home:/var/jenkins_home"
+    networks:
+      - net
+  remote_host:
+    container_name: remote-host
+    image: remote-host
+    build:
+      context: centos7
+    networks:
+      - net
+networks:
+  net:
+
+```
+3. run jenkins process
+```
+$ docker exec -it jenkins bash
+
+-- inside jenkins process
+
+$ ssh remote_user@remote_user
+-- you should enter password to login
+
+-- ※Conneting to remote_host by ssh key(inside jenkins)
+$ ssh -i remote-key remote_user@remote_host
+```
