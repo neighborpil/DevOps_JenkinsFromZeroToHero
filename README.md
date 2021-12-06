@@ -241,22 +241,23 @@ $ ssh -i remote-key remote_user@remote_host
 
 ## Connet to aws cli
 
+ - centos7/Dockerfile
 ```
 FROM centos:7
 
-RUN yum -y install openssh-server
+RUN yum -y update && yum -y install openssh-server
 
 RUN useradd remote_user && \
-    echo "1234" | passwd remote_user  --stdin && \
+    echo "1234" | passwd remote_user --stdin && \
     mkdir /home/remote_user/.ssh && \
     chmod 700 /home/remote_user/.ssh
 
 COPY remote-key.pub /home/remote_user/.ssh/authorized_keys
 
-RUN chown remote_user:remote_user   -R /home/remote_user && \
-    chmod 400 /home/remote_user/.ssh/authorized_keys
+RUN chown remote_user:remote_user -R /home/remote_user/.ssh/ && \
+    chmod 600 /home/remote_user/.ssh/authorized_keys
 
-RUN ssh-keygen -A
+RUN /usr/sbin/sshd-keygen
 
 RUN yum -y install mysql
 
@@ -266,5 +267,53 @@ RUN yum -y install epel-release && \
     pip3 install awscli
 
 CMD /usr/sbin/sshd -D
+```
 
+ - docker-compose.yml
+```
+version: '3'
+services:
+  jenkins:
+    container_name: jenkins
+    image: jenkins/jenkins
+    ports:
+      - "8080:8080"
+    volumes:
+      - "$PWD/jenkins_home:/var/jenkins_home"
+    networks:
+      - net
+  remote_host:
+    container_name: remote-host
+    image: remote-host
+    build:
+      context: centos7
+    networks:
+      - net
+  db_host:
+    container_name: db
+    image: mysql:5.7
+    environment:
+      - "MYSQL_ROOT_PASSWORD=1234"
+    volumes:
+      - "$PWD/db_data:/var/lib/mysql"
+    networks:
+      - net
+networks:
+  net:
+```
+
+### Mysql dump
+```
+# mysqldump -u root -h db_host -p testdb > /tmp/db.sql
+```
+
+### Upload file to aws
+```
+# export AWS_ACCESS_KEY_ID=AKIA4XWXSBRET3WGGWNO
+# export AWS_SECRET_ACCESS_KEY=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
+```
+ - https://docs.aws.amazon.com/cli/latest/reference/s3/cp.html
+```
+-- upload fild to aws bucket
+# aws s3 cp /tmp/db.sql s3://jenkins-mysql-backup-feelong/db.sql
 ```
