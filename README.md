@@ -317,3 +317,26 @@ networks:
 -- upload fild to aws bucket
 # aws s3 cp /tmp/db.sql s3://jenkins-mysql-backup-feelong/db.sql
 ```
+
+
+### Createting dbdump script
+1. Creating a file /tmp/script.sh
+```
+-- vi /tmp/script.sh
+
+#/bin/bash
+
+DB_HOST=$1
+DB_PASSWORD=$2
+DB_NAME=$3
+
+mysqldump -u root -h $DB_HOST -p$DB_PASSWORD $DB_NAME > /tmp/db.sql
+```
+2. Make it executable 
+```
+# chmod +x /tmp/script.sh
+```
+3. Execute
+```
+# /tmp/script.sh db_host 1234 testdb
+```
