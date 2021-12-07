@@ -340,3 +340,28 @@ mysqldump -u root -h $DB_HOST -p$DB_PASSWORD $DB_NAME > /tmp/db.sql
 ```
 # /tmp/script.sh db_host 1234 testdb
 ```
+
+### uploa db backup using Jenkins
+
+```
+#/bin/bash
+
+DATE=$(date +%H-%M-%S)
+BACKUP=db-$DATE.sql
+DB_HOST=$1
+DB_PASSWORD=$2
+DB_NAME=$3
+AWS_SECRET=$4
+BUCKET_NAME=$5
+
+mysqldump -u root -h $DB_HOST -p$DB_PASSWORD $DB_NAME > /tmp/$BACKUP && \
+export AWS_ACCESS_KEY_ID=AKIA4XWXSBRET3WGGWNO && \
+export AWS_SECRET_ACCESS_KEY=$AWS_SECRET && \
+echo "Uploading your db backup" && \
+aws s3 cp /tmp/$BACKUP s3://$BUCKET_NAME/$BACKUP
+```
+
+### ※ 도커 프로세스 강제로 죽이기
+```
+$ docker rm -fv remote-host # --force, --volumns
+```
