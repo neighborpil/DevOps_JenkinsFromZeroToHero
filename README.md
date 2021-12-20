@@ -365,3 +365,37 @@ aws s3 cp /tmp/$BACKUP s3://$BUCKET_NAME/$BACKUP
 ```
 $ docker rm -fv remote-host # --force, --volumns
 ```
+
+## Ansible
+ - hosts
+```
+[all:vars]
+
+ansible_connection = ssh
+
+[test]
+test1 ansible_host=remote_host ansible_user=remote_user ansible_private_key_file=/var/jenkins_home/ansible/remote-key
+```
+
+ - play.yml
+```
+- hosts: test1
+  tasks:
+
+    - shell: echo Hello World from Ansible > /tmp/ansible-file
+```
+ - 파일 복사
+```
+$ cp play.yml ../jenkins_home/ansible
+```
+ - playbook 실행
+```
+$ ansible-playbook -i hosts play.yml
+```
+### Install Ansible plugin on Jenkins
+1. Jenkins 관리 - 플러그인 관리 - 설치가능 - Ansible 검색
+2. 설치 후 재부팅 체크
+3. 재부팅후 Jenkins 관리 - 플러그인 관리 - 설치된 플러그인 목록에서 확인
+
+#### ※ 리눅스에서 ~기호의 의미
+ - 홈디렉토리를 의미한다
