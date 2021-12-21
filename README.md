@@ -399,3 +399,53 @@ $ ansible-playbook -i hosts play.yml
 
 #### ※ 리눅스에서 ~기호의 의미
  - 홈디렉토리를 의미한다
+
+
+
+### run ansible playbook on jenkins
+
+ - ansible playbook(play.yml)
+```
+- hosts: test1
+  tasks:
+
+    - shell: echo Hello World from Ansible again a > /tmp/ansible-file
+```
+
+### Send Parameters at Jenkins Ansible
+ 1. Set Parameter insde play.yml
+```
+- hosts: test1
+  tasks:
+    - debug:
+      msg: "{{ MSG }}"
+```
+ 2. set parameter at Jenkins configuration
+
+![image](https://user-images.githubusercontent.com/22423285/147009994-3a100c78-de73-4c83-965a-22de55d23606.png)
+
+![image](https://user-images.githubusercontent.com/22423285/147010027-9a79c99e-38ff-439d-8778-1181437ee478.png)
+
+ 3. Click Build - Advanced
+
+![image](https://user-images.githubusercontent.com/22423285/147010098-cb2e39d2-900d-4360-a5e1-5c77374de2e6.png)
+
+ 4. Connect extra variables
+
+![image](https://user-images.githubusercontent.com/22423285/147010140-1b5a31ae-fb38-435d-b38c-584e49bb765a.png)
+
+
+5. Save
+
+
+
+
+
+
+
+
+
+
+
+
+
