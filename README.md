@@ -500,7 +500,21 @@ done
 
 ```
 
+### Linux command: shuf
+ - 랜덤넘버 생성
+ - 최대 i 옵션의 개수만큼만 반환
+ - -i 시작숫자-끝숫자 : 시작숫자 ~ 끝숫자 까지 랜덤넘버를 표시
 
+```
+$ shuf -i 20-25
+```
+![image](https://user-images.githubusercontent.com/22423285/147167484-47b5de57-1266-45cc-82cd-cb7d9071747b.png)
+
+ - -n 숫자 : 숫자 개수만큼 반환
+```
+$ shuf -i 20-25 -n 3
+```
+![image](https://user-images.githubusercontent.com/22423285/147167604-660d3e4a-a8e4-4778-87e3-19b1deceeb1e.png)
 
 
 
