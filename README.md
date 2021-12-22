@@ -437,13 +437,68 @@ $ ansible-playbook -i hosts play.yml
 
 5. Save
 
+### Colorize jenkins output
+
+ 1. Installing ansible color plugin: Manage Jenkins - plugin Manager - Available - AnsiColor - Install without restart
+ 2. go to project and configure
+ 3. go to Build Enviroment and check Color ANSI Console Output
+ 4. Build - Advanced section: check Colorize stdout
+
+
+#### Linux command: nl 파일명
+ - 내용을 라인넘버를 붙여서 보여준다
+
+![image](https://user-images.githubusercontent.com/22423285/147011729-0983146d-8eff-4905-aaf0-5ea9ad5cc37b.png)
+
+#### Linux command : grep -w옵션
+ - 단어 단위로 매칭
+
+![image](https://user-images.githubusercontent.com/22423285/147011833-87aa244e-1fc6-48c4-9924-fdad2da9204b.png)
+
+#### Linux command : awk
+ 1. awk '{print $숫자}'
+  - 단어를 스페이스?단위로 잘라 보여준다
+  - 1부터 시작
+
+![image](https://user-images.githubusercontent.com/22423285/147012015-3f8c93f1-f547-4e52-aa7a-490ba21c0c29.png)
+
+ 2. awk -F ',' '{print $1}'
+  - peoplo.txt
+```
+Denice,Caudle  
+Cherise,Olenick  
+Nohemi,Overlock  
+Tom,Fellers  
+Teri,Mess  
+
+```
+  - 콤마로 잘라서 첫번째거를 보여준다
+```
+nl people.txt | grep -w 1 | awk '{print $2}' | awk -F ',' '{print $2}'
+```
+
+![image](https://user-images.githubusercontent.com/22423285/147012214-2a310983-6d38-48e3-aae6-d529dcf4dbca.png)
 
 
 
 
+### Creating sh
+ - put.sh
+```
 
+#!/bin/bash
 
+counter=0
 
+while [ $counter -lt 50 ]; do
+  let counter=counter+1
+
+  name=$(nl people.txt | grep -w $counter | awk '{print $2}' | awk -F ',' '{print $1}')
+  lastname=$(nl people.txt | grep -w $counter | awk '{print $2}' | awk -F ',' '{print $2}')
+  # echo "name for person with id $counter is $name, $lastname"
+done
+
+```
 
 
 
