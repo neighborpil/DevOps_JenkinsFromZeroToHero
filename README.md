@@ -517,8 +517,27 @@ $ shuf -i 20-25 -n 3
 ![image](https://user-images.githubusercontent.com/22423285/147167604-660d3e4a-a8e4-4778-87e3-19b1deceeb1e.png)
 
 
-#### 도커 컨테이너로 파일 복사
+#### ※ 도커 컨테이너로 파일 복사
 ```
 $ docker cp put.sh db:/tmp
 ```
 
+#### put.sh
+ - people.txt파일에서 데이터를 읽어서 DB에 넣는 스크립트
+```
+#!/bin/bash
+
+counter=0
+
+while [ $counter -lt 50 ]; do
+  let counter=counter+1
+
+  name=$(nl people.txt | grep -w $counter | awk '{print $2}' | awk -F ',' '{print $1}')
+  lastname=$(nl people.txt | grep -w $counter | awk '{print $2}' | awk -F ',' '{print $2}')
+  # echo "name for person with id $counter is $name, $lastname"
+  age=$(shuf -i 20-25 -n 1)
+
+  mysql -u root -p1234 people -e "insert into register values($counter, '$name', '$lastname', $age)"
+  echo "$counter, $name $lastname, $age was correctly imported"
+done
+```
