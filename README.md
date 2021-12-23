@@ -517,4 +517,8 @@ $ shuf -i 20-25 -n 3
 ![image](https://user-images.githubusercontent.com/22423285/147167604-660d3e4a-a8e4-4778-87e3-19b1deceeb1e.png)
 
 
+#### 도커 컨테이너로 파일 복사
+```
+$ docker cp put.sh db:/tmp
+```
 
