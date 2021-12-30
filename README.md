@@ -562,3 +562,67 @@ done
 ![image](https://user-images.githubusercontent.com/22423285/147711556-975bac7d-8e74-41fb-8b9c-17d9c41e83a2.png)
 
  2. Assign role to users
+
+
+### Jenkins Enviroment Variables
+ - wiki: https://wiki.jenkins.io/JENKINS/Building-a-software-project.html
+ - build시 자동으로 부여되는 것들
+ - 작업 인덱싱에 사용 가능
+```
+echo "BUILD NUMBER FOR THIS IS $BUILD_NUMBER"
+echo "BUILD ID IS $BUILD_ID"
+echo "BUILD URL IS $BUILD_URL"
+echo "JOB NAME IS $JOB_NAME"
+```
+
+### How to make own variable
+ - manage jenkins - configure system - global properties
+ - check Environment variablers
+
+### Configure jenkins url
+ - Manage Jenkins - configure system - Jenkins Location
+
+## Run Jenkins automatically
+ - Go to Job
+ - configure section
+ - build triggers
+ - build periodically
+ - go to this site(https://crontab.guru/every-day-at-1am) and get command 
+ - paste it
+ - H는 여러 작업을 젠킨스가 알아서 배분하여  부하를 적게 하는 옵션이다
+```
+H 1 * * *
+```
+
+### Run jobs through outer script or something
+ - give role that has build and read permission
+ - assign the role that made
+ - get crumb on linux
+```
+[jenkins@jenkins ~]$ crumb=$(curl -u "jenkins:1234" -s 'http://192.168.100.125:8080/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,":",//crumb)')
+[jenkins@jenkins ~]$ echo $crumb
+Jenkins-Crumb:eaf8b3b90b413fbdc5014fcf5215bd4fbd8b61ec73330a97272699eba26c2811ea304644114661e1936607d594deffc629ce15a991b4f7939ed58b5679d2be3f
+
+```
+ - crumb.sh
+```
+#/bin/bash
+crumb=$(curl -u "jenkins:1234" -s 'http://192.168.100.125:8080/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,":",//crumb)')
+curl -u "jenkins:1234" -H "$crumb" -X POST http://192.168.100.125:8080/job/ENV/build?delay=0sec
+
+```
+ - trigger crumb.sh
+ - check the result on jenkins website
+ - 
+
+### Run jobs through outer script or something with parameters
+
+
+
+
+
+
+
+
+
+
