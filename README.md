@@ -628,11 +628,134 @@ curl -u "jenkins:1234" -H "$crumb" -X POST http://192.168.100.125:8080/job/ansib
 ![image](https://user-images.githubusercontent.com/22423285/147766392-18135d4b-1600-48c5-944c-4aaf907f81bb.png)
 
 ## Maven
- - install maven integration plugin
+### Copy git files to jenkins project
+- install maven integration plugin
+ - maven app for testing(https://github.com/jenkins-docs/simple-java-maven-app)
+ - clone a git repository : add source management options at job configuration
+
+![image](https://user-images.githubusercontent.com/22423285/147792381-84cf481a-3269-4418-85cf-30bab8ff77ae.png)
+
+ - check that source is correctly downloaded
+```
+$ docker exec -it jenkins bash
+$ cd
+$ cd jenkins_home/workspace/maven-jop
+$ ls
+```
+### How to build jar file
+ - Manage Jenkins - Global Tool Configuration
+ - add name to Maven section
+ - change version that you want
+
+![image](https://user-images.githubusercontent.com/22423285/147792646-aee1475e-b264-44b1-a42a-1d11a79fb884.png)
+
+ - save
+ - go to job and configuration
+ - select Invoke top-level Maven targets at Build section
+ - select Maven Version
+ - Set Goals
+
+![image](https://user-images.githubusercontent.com/22423285/147792816-6cedd755-afc7-4dc2-99b3-ee232cb44bcd.png)
 
 
+#### Check maven work
+ - https://github.com/jenkins-docs/simple-java-maven-app/blob/master/jenkins/Jenkinsfile
+```
+pipeline {
+    agent {
+        docker {
+            image 'maven:3-alpine'
+            args '-v /root/.m2:/root/.m2'
+        }
+    }
+    stages {
+        stage('Build') {
+            steps {
+                sh 'mvn -B -DskipTests clean package'
+            }
+        }
+        stage('Test') {
+            steps {
+                sh 'mvn test'
+            }
+            post {
+                always {
+                    junit 'target/surefire-reports/*.xml'
+                }
+            }
+        }
+        stage('Deliver') {
+            steps {
+                sh './jenkins/scripts/deliver.sh'
+            }
+        }
+    }
+}
+```
 
+ - check the result at /var/jenkins_home/workspace/maven-jop/target/my-app-1.0-SNAPSHOT.jar
 
+### Run junit test automatically
+ - Go to job Configure
+ - Add build step
+ - Invoke top-level Maven targets
+ - select maven-version
+ - simply write test on Goals
+ - save and execute
+
+### Deploy jar locally
+ - Go to job Configure
+ - Add build step
+ - Execute shell
+```
+echo "******************"
+echo "Deploying JAR"
+echo "******************"
+
+java -jar  /var/jenkins_home/workspace/maven-jop/target/my-app-1.0-SNAPSHOT.jar
+```
+
+![image](https://user-images.githubusercontent.com/22423285/147794099-6b30f52b-5faf-48f5-bd0d-5711c7a3eff3.png)
+
+### Display testing result using a graph 
+ - Go to job Configure
+ - Add post build action
+ - publish junit test result report
+ - add a relative path of xml
+```
+target/surefire-reports/*.xml
+```
+
+![image](https://user-images.githubusercontent.com/22423285/147794326-9cdc715f-9829-4a67-9dfb-90d7158c639d.png)
+
+ - check the test result at job page
+
+![image](https://user-images.githubusercontent.com/22423285/147794398-f455ac0b-aa97-4302-86dc-ad468aba56b0.png)
+
+### Archive the last successful artifact
+ - Go to job Configure
+ - Add post build action
+ - Archive the artifacts
+ - set a path of files to archive
+```
+target/*.jar
+```
+ - Check Archive artifacts only if build is successful
+
+![image](https://user-images.githubusercontent.com/22423285/147794556-7c1c80d2-7ed7-4015-b9c9-789546696b52.png)
+
+ - Check the result
+
+![image](https://user-images.githubusercontent.com/22423285/147794585-dd3899c9-a4fa-4fc8-ac52-7c0d50c1ab48.png)
+
+### Send Email notifications about the status of my maven job
+ - Go to job Configure
+ - Add post build action
+ - E-mail Notification
+ - check options
+ - save and run
+
+![image](https://user-images.githubusercontent.com/22423285/147794661-4d5ff929-54ff-437d-bb64-a2f53309bda8.png)
 
 
 
