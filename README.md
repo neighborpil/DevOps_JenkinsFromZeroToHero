@@ -613,11 +613,22 @@ curl -u "jenkins:1234" -H "$crumb" -X POST http://192.168.100.125:8080/job/ENV/b
 ```
  - trigger crumb.sh
  - check the result on jenkins website
- - 
+ - To send parameters, just add parameters like web address parameters(?a=b&c=d)
+```
+#/bin/bash
+crumb=$(curl -u "jenkins:1234" -s 'http://192.168.100.125:8080/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,":",//crumb)')
+curl -u "jenkins:1234" -H "$crumb" -X POST http://192.168.100.125:8080/job/ansible-users-db/buildWithParameters?AGE=23
+```
 
-### Run jobs through outer script or something with parameters
+## Sending Email
+ - Mailer Plugin is installed by default
 
+![image](https://user-images.githubusercontent.com/22423285/147766278-d2f91147-dc90-4f22-98d5-0ad84199fd54.png)
+ 
+![image](https://user-images.githubusercontent.com/22423285/147766392-18135d4b-1600-48c5-944c-4aaf907f81bb.png)
 
+## Maven
+ - install maven integration plugin
 
 
 
