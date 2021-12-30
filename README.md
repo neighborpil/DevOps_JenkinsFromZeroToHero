@@ -541,3 +541,24 @@ while [ $counter -lt 50 ]; do
   echo "$counter, $name $lastname, $age was correctly imported"
 done
 ```
+
+## Jenkins Security
+ - Global Security Configuration에서 회원가입 허용 가능
+
+### Role base authentication strategy
+ 1. need to install "Role base authentication strategy" plugin
+ 2. go to Manage jenkins - Configure Global Security
+ 3. Click Authentication - Role-Based Strategy
+ 4. Menu "Manage and Assign Roles" will be created at Jenkins Management
+
+### How to create new user
+ 1. go to Manage jenkins
+ 2. Manage Users
+ 3. Create User button
+
+### Manage and Assign Roles
+ 1. Create roles using Manage Roles menu
+
+![image](https://user-images.githubusercontent.com/22423285/147711556-975bac7d-8e74-41fb-8b9c-17d9c41e83a2.png)
+
+ 2. Assign role to users
