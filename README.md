@@ -2,6 +2,13 @@
 Example Codes for practicing
 
 ## Installing Docker
+
+#### ※ 리눅스 관리자 권한 주기
+ 1. root로 로그인
+ 2. # usermod -aG wheel 아이디
+ 3. # id 아이디로 권한 확인
+ 4. 관리자 권한을 준 아이디 재접속후 id로 확인 
+
 ### 1. Installing Docker
  - centos install guide: https://docs.docker.com/engine/install/centos/
  - hwo to install
