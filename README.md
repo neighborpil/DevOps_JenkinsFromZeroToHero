@@ -209,6 +209,24 @@ RUN /usr/sbin/sshd-keygen
 CMD /usr/sbin/sshd -D
 
 ```
+
+1.1 create ssh eky
+```
+$ ssh-keygen -f remote-key
+```
+1.2 copy file to ssh folder
+```
+$ sudo cp remote-key.pub ./.ssh/authorized_keys
+```
+1.3 set to folder owner
+```
+$ sudo chown neighborpil:neighborpil -R /home/remote_host/.ssh/
+```
+1.4 restart
+```
+$ sudo systemctl restart sshd
+```
+
 2. add remote_host to docker-compose.yml
 ```
 version: '3'
