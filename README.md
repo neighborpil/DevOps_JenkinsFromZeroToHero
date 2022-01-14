@@ -788,3 +788,5 @@ target/*.jar
 
 
 
+#### 깃랩 패스워드 초기화
+https://docs.gitlab.com/ee/security/reset_user_password.html#reset-your-root-password
