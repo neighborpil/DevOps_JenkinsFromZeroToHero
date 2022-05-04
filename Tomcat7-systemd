@@ -1,0 +1,105 @@
+## 톰캣 세팅 
+ - tomcat/Dockerfile
+ 
+```
+FROM centos:centos7.9.2009
+
+ENV container docker
+
+RUN yum -y install systemd; yum clean all; \
+(cd /lib/systemd/system/sysinit.target.wants/; for i in *; do [ $i == systemd-tmpfiles-setup.service ] || rm -f $i; done); \
+rm -f /lib/systemd/system/multi-user.target.wants/*;\
+rm -f /etc/systemd/system/*.wants/*;\
+rm -f /lib/systemd/system/local-fs.target.wants/*; \
+rm -f /lib/systemd/system/sockets.target.wants/*udev*; \
+rm -f /lib/systemd/system/sockets.target.wants/*initctl*; \
+rm -f /lib/systemd/system/basic.target.wants/*;\
+rm -f /lib/systemd/system/anaconda.target.wants/*;
+
+VOLUME [ "/sys/fs/cgroup" ]
+
+RUN yum -y update
+
+RUN yum install -y yum-utils device-mapper-persistent-data lvm2
+
+RUN yum -y remove java
+
+RUN yum install -y java-1.8.0-openjdk java-1.8.0-openjdk-devel
+
+RUN yum install -y openssh-server
+
+RUN yum install -y wget
+
+# [change root password]
+
+RUN echo "root:1234" | chpasswd
+
+# [Set Java]
+
+ENV JAVA_HOME /usr/lib/jvm/java-1.8.0-openjdk
+
+RUN export JAVA_HOME
+
+ENV PATH="$PATH:$JAVA_HOME/bin"
+
+RUN export PATH
+
+ENV CLASSPATH="$JAVA_HOME/jre/lib:$JAVA_HOME/lib/tools.jar"
+
+RUN export CLASSPATH
+
+# [Set Tomcat]
+
+ENV TOMCAT_MAJOR 8
+
+ENV TOMCAT_VERSION 8.0.53
+
+ENV CATALINA_HOME /root/tomcat
+
+ENV PATH $CATALINA_HOME/bin:$CATALINA_HOME/lib;$PATH
+
+RUN wget https://archive.apache.org/dist/tomcat/tomcat-${TOMCAT_MAJOR}/v${TOMCAT_VERSION}/bin/apache-tomcat-${TOMCAT_VERSION}.tar.gz && \
+ tar -xvf apache-tomcat-${TOMCAT_VERSION}.tar.gz
+
+RUN mv apache-tomcat-${TOMCAT_VERSION} /root/tomcat
+
+RUN rm apache-tomcat*.tar.gz
+
+WORKDIR /root/tomcat
+
+# [expose ports]
+
+EXPOSE 8080/tcp
+
+EXPOSE 22/tcp
+
+CMD ["rm -rf /run/nologin"]
+
+CMD ["/usr/sbin/init"]
+```
+
+ - docker-compose.xml
+```
+version: '3.7'
+services:
+  tomcattest:
+    container_name: tomcattest
+    image: local/centos7-tomcat
+    privileged: true
+    build:
+      context: $PWD/tomcat/.
+      dockerfile: Dockerfile
+    ports:
+      - "8813:8080"
+      - "10025:22"
+    volumes:
+      - "$PWD/tomcat/webapps:/root/tomcat/webapps"
+      - "$PWD/tomcat/logs:/root/tomcat/logs"
+      - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+    networks:
+      - net
+networks:
+  net:
+
+
+```
