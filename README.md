@@ -31,6 +31,18 @@ $ sudo systemctl start docker
 --  그리고 재부팅
 ```
 ### 2. Installing Docker compose
+ - yum또는 apt에서 설치한다
+```
+$ sudo yum install -y docker-compose-plugin
+```
+ - 이후 사용은 이런 방식으로 한다
+```
+$docker compose version
+```
+
+
+
+------------옛날 방식------------
  - https://docs.docker.com/compose/install/
 ```
 -- docker compose 설치
@@ -38,6 +50,7 @@ $ sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docke
 -- docker compose를 실행 할 수 있는 권한 부여
 $ sudo chmod +x /usr/local/bin/docker-compose
 ```
+------------옛날방식------------------
 
 ※ du -sh 폴더
  - 폴더의 용량을 확인하는 명령어
